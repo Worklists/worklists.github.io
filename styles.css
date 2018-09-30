@@ -26,8 +26,8 @@ body{
   position: relative;
   font-family: Indie Flower;
   font-weight: bold;
-  font-size: 2vw;
-  display: inline-block;  
+  font-size: 3vw;
+  display: inline-block;
 }
 .title_logo:hover{
   color: #cc0000;
@@ -46,32 +46,32 @@ body{
   margin-left: 10%;
   margin-top: 5px;
   font-weight: bold;
-  font-size: 1.5em;
+  font-size: 2vw;
   font-family: Ubuntu;
 }
-.col1 .child{
+.child{
   background-color: #fdfdfd;
   border-radius: 20px;
   margin: 10px;
   padding: 10px;
   order: 1;
   position: relative;
-
   cursor: grab;
 }
-.col1 .child .childcontent{
+.childcontent{
   float: left;
   margin: 10px;
   padding: 0px 14px 0px 5px;
 }
 
-.col1 .child .childlogo{
+.childlogo{
   float: right;
   margin: 10px;
   position: absolute;
   top : 0px;
   right:0px;
   visibility: hidden;
+  cursor: pointer;
 }
 .child:hover .childlogo{
   visibility: visible;
@@ -102,7 +102,6 @@ body{
   right:0px;
   visibility: hidden;
 }
-
 .col1 .add{
   flex: 1;
   font-size: 1vw;
@@ -115,52 +114,58 @@ body{
 .add:hover{
   background-color: #dddddd;
 }
-.col1 .child1{
-  background-color: #fdfdfd;
-  border-radius: 20px;
-  margin: 10px;
-  padding: 10px;
-  order: 1;
-  position: absolute;
-  width: 23%;
-  height: 100px;
-  cursor: grab;
-}
+
 .col2{
   width: 23.33%;
-  height: 400px;
   background-color: #eeeeee;
   border-radius: 10px;
   margin-left: 1%;
   float: left;
+  display: flex;
+  flex-direction: column;
 }
 .col2 .head{
   color: #6666aa;
   margin-left: 10%;
   margin-top: 5px;
   font-weight: bold;
-  font-size: 1.5em;
+  font-size: 2vw;
   font-family: Ubuntu;
 }
+.col2 .add{
+  flex: 1;
+  font-size: 1vw;
+  font-weight: bold;
+  color: #aaaaaa;
+  padding: 10px;
+  border-radius: 0 0 10px 10px;
+  order: 10;
+}
+
+
 .col3{
   width: 23.33%;
-  height: 400px;
   background-color: #eeeeee;
   border-radius: 10px;
   margin-left: 1%;
   float: left;
+  display: flex;
+  flex-direction: column;
 }
 .col3 .head{
   color: #6666aa;
   margin-left: 10%;
   margin-top: 5px;
   font-weight: bold;
-  font-size: 1.5em;
+  font-size: 2vw;
   font-family: Ubuntu;
 }
-
-.test{
-  width: 24px;
-  margin: auto;
-  border: 1px solid red;
+.col3 .add{
+  flex: 1;
+  font-size: 1vw;
+  font-weight: bold;
+  color: #aaaaaa;
+  padding: 10px;
+  border-radius: 0 0 10px 10px;
+  order: 10;
 }
