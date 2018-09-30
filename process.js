@@ -1,4 +1,4 @@
-child_col1_num = 0;
+var child_col1_num = 0, child_col2_num = 0, child_col3_num = 0;
 var a, id_elem_drap;
 var is_select = false;
 var x_start_press, y_start_press, height_child, width_child;
@@ -28,98 +28,113 @@ function child_press(e){
   x_offset = document.getElementById(id_elem_drap).offsetLeft - e.x - 10;
   y_offset = document.getElementById(id_elem_drap).offsetTop - e.y - 10;
   console.log(document.getElementById(id_elem_drap).offsetLeft);
-
-
 }
-function add_child_callback(){
+
+function add_child_callback(e){
   if(!is_select){
-    console.log('a');
-    var parent = document.getElementById("col1");
     var child = document.createElement("div");
     var childcontent = document.createElement("div");
     var childlogo = document.createElement("div");
 
-    child.setAttribute('class','child noselect');
-    //child.setAttribute('contenteditable', 'true');
-    //child.innerHTML = "hihi";
-    child.id = 'c1_' + child_col1_num;
-    child.style.order = child_col1_num;
+    switch(e.target.parentElement.id){
+      case 'col1':
+      {
+        var parent = document.getElementById("col1");
+        child.id = 'c1_' + child_col1_num;
+        child.style.order = child_col1_num;
+        child_col1_num = child_col1_num + 1;
+        break;
+      }
+      case 'col2':
+      {
+        var parent = document.getElementById("col2");
+        child.id = 'c2_' + child_col2_num;
+        child.style.order = child_col2_num;
+        child_col2_num = child_col2_num + 1;
+        break;
+      }
+      case 'col3':
+      {
+        var parent = document.getElementById("col3");
+        child.id = 'c3_' + child_col3_num;
+        child.style.order = child_col3_num;
+        child_col3_num = child_col3_num + 1;
+        break;
+      }
+    }
 
+    child.setAttribute('class','child noselect');
+    //Content on Child
     childcontent.setAttribute('class','childcontent noselect');
     childcontent.setAttribute('contenteditable', 'true');
     childcontent.innerHTML = 'Task';
-
+    //Logo on Child
     childlogo.setAttribute('class','childlogo fa fa-edit');
 
     child.appendChild(childcontent);
     child.appendChild(childlogo);
-
-    child_col1_num = child_col1_num + 1;
     parent.appendChild(child);
-    child.addEventListener('mousedown',child_press,false);
 
-    console.log(typeof(parent.clientHeight));
-    //parent.style.height = (parent.clientHeight + 80) + 'px';
+    child.addEventListener('mousedown',child_press,false);
   }
 }
-var k = 10, elem_move;
+var elem_move;
 var is_create_element_drap = false;
+var is_init_element_drap = false;
 var x_offset, y_offset;
 function col1_move(e){
   //console.log(is_select)
   if((is_select)&&(e.x != x_start_press)&&(e.y != y_start_press)){
-    if(!is_create_element_drap){
-      is_create_element_drap = true;
+    if(!is_init_element_drap){
+      switch (elem_drap.parentElement.id) {
+        case 'col1':{
+          col_drap_obj = document.getElementById('col1');
+          break;
+        }
+        case 'col2':{
+          col_drap_obj = document.getElementById('col2');
+          break;
+        }
+        case 'col3':{
+          col_drap_obj = document.getElementById('col3');
+          break;
+        }
+      }
 
+      is_init_element_drap = true;
       elem_move = document.createElement('div');
       //console.log('move')
       elem_move.innerHTML = document.getElementById(id_elem_drap).innerHTML;
       document.getElementById(id_elem_drap).innerText = '';
-      //console.log(height_child);
       document.getElementById(id_elem_drap).style.height = height_child - 20 +'px';
-      //console.log(document.getElementById(id_elem_drap).clientHeight);
-
       document.getElementById(id_elem_drap).style.background = '#f4f4f4'
-
-      //console.log(document.getElementById(id_elem_drap).style);
-      //elem_move.style = document.getElementById(id_elem_drap).style;
       elem_move.setAttribute('class','childdrap noselect');
       elem_move.style.height = height_child - 20 + 'px';
       elem_move.style.width = width_child - 20 + 'px';
-      document.body.appendChild(elem_move);
-      //console.log('----------------------------')
-      //console.log(document.getElementById(id_elem_drap).offsetLeft)
 
-      //
-      col1_obj = document.getElementById('col1');
-      col1_x_common = col1_obj.clientWidth;
-      col1_y_element = {};
-      col1_height_element = {};
-      /*
-      for(i = 2; i < col1_obj.childElementCount; i++){
-        col1_y_element[i] = col1_obj.children[i].offsetTop;
-        col1_height_element[i] = col1_obj.children[i].clientHeight;
-      }*/
+      elem_move.style.left = e.x + x_offset + 'px';
+      elem_move.style.top = e.y + y_offset + 'px';
+
+
+      col_x_common = col_drap_obj.clientWidth;
+      col_y_element = {};
+      col_height_element = {};
     }
     else{
+      if(!is_create_element_drap){
+        document.body.appendChild(elem_move);
+        is_create_element_drap = true;
+      }
       elem_move.style.position = 'absolute';
       elem_move.style.left = e.x + x_offset + 'px';
       elem_move.style.top = e.y + y_offset + 'px';
-      k = k + 1;
-
-
-      for(i = 2; i < col1_obj.childElementCount; i++){
-        col1_y_element[i] = col1_obj.children[i].offsetTop;
-        col1_height_element[i] = col1_obj.children[i].clientHeight;
-        console.log('-------------------------------------------------------')
-        console.log(i)
-        console.log(elem_move.offsetTop - 10)
-        console.log(col1_obj.children[i].offsetTop)
-        if(((elem_move.offsetTop - 10 + elem_move.clientHeight/2) > col1_obj.children[i].offsetTop)&&((elem_move.offsetTop - 10 + elem_move.clientHeight/2) < (col1_obj.children[i].offsetTop + col1_obj.children[i].clientHeight))){
-          order_temp = col1_obj.children[i].style.order;
-          col1_obj.children[i].style.order = document.getElementById(id_elem_drap).style.order;
+      for(i = 2; i < col_drap_obj.childElementCount; i++){
+        col_y_element[i] = col_drap_obj.children[i].offsetTop;
+        col_height_element[i] = col_drap_obj.children[i].clientHeight;
+        if(((elem_move.offsetTop - 10 + elem_move.clientHeight/2) > col_drap_obj.children[i].offsetTop)&&((elem_move.offsetTop - 10 + elem_move.clientHeight/2) < (col_drap_obj.children[i].offsetTop + col_drap_obj.children[i].clientHeight))){
+          order_temp = col_drap_obj.children[i].style.order;
+          col_drap_obj.children[i].style.order = document.getElementById(id_elem_drap).style.order;
           document.getElementById(id_elem_drap).style.order = order_temp;
-          console.log('change');
           break;
         }
       }
@@ -144,13 +159,24 @@ function col1_up(e){
   }
   is_select = false;
   is_create_element_drap = false;
+  is_init_element_drap = false;
 }
 $(document).ready(function() {
   document.getElementById('add1').addEventListener('mousedown',add_child_callback, false);
-  document.getElementById('col1').addEventListener('mousemove',col1_move, false);
+  document.getElementById('add2').addEventListener('mousedown',add_child_callback, false);
+  document.getElementById('add3').addEventListener('mousedown',add_child_callback, false);
 
+  //----------------------------------------------------------------------------
+  document.getElementById('col1').addEventListener('mousemove',col1_move, false);
+  window.addEventListener('mousemove',col1_move, false);
+
+  //----------------------------------------------------------------------------
+  //Mouse Up for drap element or none (col1, col2, col3)
   document.getElementById('col1').addEventListener('mouseup',col1_up, false);
+  document.getElementById('col2').addEventListener('mouseup',col1_up, false);
+  document.getElementById('col3').addEventListener('mouseup',col1_up, false);
+  //Mouse Up for drap element or none in window
   window.addEventListener('mouseup',col1_up, false);
 
-  window.addEventListener('mousemove',col1_move, false);
+
 })
