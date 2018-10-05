@@ -162,6 +162,8 @@ function add_child_callback(e){
     var child = document.createElement("div");
     var childcontent = document.createElement("div");
     var childlogo = document.createElement("div");
+
+
     switch(e.target.parentElement.id){
       case 'col1':
       {
@@ -189,6 +191,7 @@ function add_child_callback(e){
       }
     }
     child_col[e.target.parentElement.id] = child_col[e.target.parentElement.id] + 1;
+
     child.setAttribute('class','child noselect');
     //Content on Child
     childcontent.setAttribute('class','childcontent noselect');
@@ -196,9 +199,11 @@ function add_child_callback(e){
     childcontent.innerHTML = 'Task';
     //Logo on Child
     childlogo.setAttribute('class','childlogo fa fa-edit');
+
     child.appendChild(childcontent);
     child.appendChild(childlogo);
     parent.appendChild(child);
+
     child.addEventListener('mousedown',child_press,false);
   }
   */
