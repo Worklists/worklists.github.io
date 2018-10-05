@@ -89,23 +89,34 @@ body{
   cursor: grab;
   transform: rotate(3deg);
 }
-.childcontent{
+*:focus {
+    outline: none;
+}
+.childinput{
   float: left;
   margin: 10px;
-  padding: 0px 14px 0px 5px;
+  padding: 0px 20px 0px 5px;
+  width: calc(100% - 20px*2);
+  background-color:transparent;
+  border: 0px solid;
+  overflow-wrap: break-word;
+  overflow: auto;
 }
-.childlogo{
+.childinput_logo{
   float: right;
   margin: 10px;
   position: absolute;
   top : 0px;
   right:0px;
   visibility: hidden;
+  cursor: pointer;
+}
+.child:hover .childinput_logo{
+  visibility: visible;
 }
 .col1 .add{
   flex: 1;
   font-size: 1vw;
-  font-weight: bold;
   color: #aaaaaa;
   padding: 10px;
   border-radius: 0 0 10px 10px;
@@ -135,7 +146,6 @@ body{
 .col2 .add{
   flex: 1;
   font-size: 1vw;
-  font-weight: bold;
   color: #aaaaaa;
   padding: 10px;
   border-radius: 0 0 10px 10px;
@@ -163,7 +173,6 @@ body{
 .col3 .add{
   flex: 1;
   font-size: 1vw;
-  font-weight: bold;
   color: #aaaaaa;
   padding: 10px;
   border-radius: 0 0 10px 10px;
