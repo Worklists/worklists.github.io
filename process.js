@@ -569,6 +569,7 @@ var is_uid = false;
 var is_content_init = false;
 function readAll() {
   console.log(db);
+  try{
    var objectStore = db.transaction(["firebaseLocalStorage"]).objectStore("firebaseLocalStorage");
    objectStore.openCursor().onsuccess = function(event) {
       var cursor = event.target.result;
@@ -596,6 +597,10 @@ function readAll() {
         is_content_init = true;
       }
    };
+  }
+  catch(err){
+    console.log(err);
+  }
 }
 
 $(document).ready(function() {
