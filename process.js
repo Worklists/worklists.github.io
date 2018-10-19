@@ -568,6 +568,7 @@ function IndexDB_Init(){
 var is_uid = false;
 var is_content_init = false;
 function readAll() {
+  console.log(db);
    var objectStore = db.transaction(["firebaseLocalStorage"]).objectStore("firebaseLocalStorage");
    objectStore.openCursor().onsuccess = function(event) {
       var cursor = event.target.result;
