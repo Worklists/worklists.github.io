@@ -2,11 +2,19 @@ function add_element_firebase(col_, index_, text_){
   var db = firebase.firestore();
   var data = new Object;
   data[index_] = text_;
-  console.log(data);
+  //console.log(data);
 
-  db.collection("db").doc(col_).update({
+  db.collection(user_id).doc(col_)
+  .update({
     [index_]: text_
-  });
+  })
+  .catch(function(err){
+    db.collection(user_id).doc(col_)
+    .set({
+      [index_]: text_
+    })
+    //console.log(err);
+  })
 }
 function firebase_init(){
   var config = {
@@ -25,14 +33,39 @@ function firebase_init(){
 }
 var test1;
 var first_get = false;
+function firebase_exist(){
+  firebase.firestore().collection(user_id).get()
+  .then(function(querySnapshot) {
+    //console.log('then')
+    test1 = querySnapshot;
+    //console.log(querySnapshot)
+    if(test1.size === 0){
+      //console.log('Firebase for User not Init')
+      return false;
+    }
+    else{
+      //console.log('Firebase for User have Init')
+      return true;
+    }
+  })
+  .catch(function(error){
+    //console.log("Error getting document:", error);
+  })
+}
 function getData_firebase(){
-  firebase.firestore().collection("db").get().then(function(querySnapshot) {
+  //console.log(user_ids);
+
+  firebase.firestore().collection(user_id).get()
+  .then(function(querySnapshot) {
+    //console.log('then')
+    test1 = querySnapshot;
+    //console.log(querySnapshot)
     querySnapshot.forEach(function(doc) {
         // doc.data() is never undefined for query doc snapshots
         console.log(doc.id, " => ", doc.data());
         test1 = doc.data();
 
-        console.log(doc.data()[1])
+        //console.log(doc.data()[1])
         var index_get_data = 0;
         while(true){
           if(doc.data()[index_get_data] !== undefined){
@@ -43,13 +76,10 @@ function getData_firebase(){
           }
           index_get_data = index_get_data + 1;
         }
-
-        try {
-          //add_child(doc.id, doc.data().value.index, doc.data().value.text)
-        }
-        catch(e){
-        }
     });
+  })
+  .catch(function(error) {
+    //console.log("Error getting document:", error);
   });
 }
 function delete_element_firebase(col, index){
@@ -63,9 +93,13 @@ function delete_element_firebase(col, index){
   });
   */
   var db = firebase.firestore();
-  var cityRef = db.collection('db').doc(col);
+  var cityRef = db.collection(user_id).doc(col);
   // Remove the 'capital' field from the document
   var removeCapital = cityRef.update({
       [index]: firebase.firestore.FieldValue.delete()
   });
+}
+function firebase_auth(){
+
+
 }
