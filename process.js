@@ -599,6 +599,7 @@ function readAll() {
    };
   }
   catch(err){
+    login_init_page();
     console.log(err);
   }
 }
