@@ -36,10 +36,7 @@ function create_AddElem(col){
   child.setAttribute('class','fa fa-plus add noselect');
   child.innerText = ' Thêm thẻ khác...';
   document.getElementById(col).appendChild(child);
-
   child.addEventListener('mousedown',add_child_callback, false);
-
-
 }
 function child_press(e){
   //e.target.innerHTML = 'Change';
@@ -69,7 +66,6 @@ function child_press(e){
     y_offset = document.getElementById(id_elem_drap).offsetTop - e.y - 10;
     console.log(document.getElementById(id_elem_drap).offsetLeft);
   }
-
 }
 function add_child(col, index, content){
   var child = document.createElement("div");
@@ -162,8 +158,6 @@ function add_child_callback(e){
     var child = document.createElement("div");
     var childcontent = document.createElement("div");
     var childlogo = document.createElement("div");
-
-
     switch(e.target.parentElement.id){
       case 'col1':
       {
@@ -191,7 +185,6 @@ function add_child_callback(e){
       }
     }
     child_col[e.target.parentElement.id] = child_col[e.target.parentElement.id] + 1;
-
     child.setAttribute('class','child noselect');
     //Content on Child
     childcontent.setAttribute('class','childcontent noselect');
@@ -199,11 +192,9 @@ function add_child_callback(e){
     childcontent.innerHTML = 'Task';
     //Logo on Child
     childlogo.setAttribute('class','childlogo fa fa-edit');
-
     child.appendChild(childcontent);
     child.appendChild(childlogo);
     parent.appendChild(child);
-
     child.addEventListener('mousedown',child_press,false);
   }
   */
@@ -256,18 +247,34 @@ function col1_move(e){
           if(col_check !== col_drap_obj.id){
             if(col_obj.childElementCount == 2){
               var order_temp = elem_drap.style.order;
-              add_element_firebase(col_check, 0, elem_drap.textContent);
+
+              /*
+              delete_element_firebase(col_drap_obj.id, col_drap_obj.childElementCount - 3);
+              col_drap_obj.removeChild(elem_drap);
+              elem_drap.style.order = 0;
+              col_obj.appendChild(elem_drap);
+              add_element_firebase(col_obj.id, 0, elem_move.textContent);
+              */
+
+
+              //
+
+              delete_element_firebase(col_drap_obj.id, col_drap_obj.childElementCount - 3);
+              col_drap_obj.removeChild(elem_drap);
 
               elem_drap.style.order = 0;
               col_obj.appendChild(elem_drap);
+              add_element_firebase(col_check, 0, elem_move.textContent);
 
-              delete_element_firebase(col_drap_obj.id, col_drap_obj.childElementCount - 3);
 
-              col_drap_obj.removeChild(elem_drap);
-              for(j = 1; j < col_drap_obj.childElementCount; j++){
-                if((col_drap_obj.children[j].style.order > order_temp)&&(col_drap_obj.children[j].style.order < 10)){
-                  col_drap_obj.children[j].style.order = col_drap_obj.children[j].style.order - 1;
-                  add_element_firebase(col_drap_obj.id, col_drap_obj.children[j].style.order, col_drap_obj.children[j].textContent);
+              console.log('Elelemt Count' + col_drap_obj.childElementCount)
+              for(k = 1; k < col_drap_obj.childElementCount; k++){
+                if((col_drap_obj.children[k].style.order > order_temp)&&(col_drap_obj.children[k].style.order < 10)){
+                  console.log('K' + k);
+
+                  col_drap_obj.children[k].style.order = col_drap_obj.children[k].style.order - 1;
+                  console.log('New Order ' + col_drap_obj.children[k].style.order);
+                  add_element_firebase(col_drap_obj.id, col_drap_obj.children[k].style.order, col_drap_obj.children[k].textContent);
                 }
               }
             }
@@ -417,7 +424,7 @@ function elem_delete(elem_del){
 }
 
 function keypress_callback(e){
-  console.log(e.key);
+  //console.log(e.key);
 
 
   if((e.key == 'Enter')&&(is_addElement)){
@@ -452,12 +459,23 @@ document.onkeydown = function(evt) {
       child_textarea_add_temp.parentElement.removeChild(child_textarea_add_temp);
     }
 };
-$(document).ready(function() {
-  firebase_init();
 
+function content_init_page(){
+  //Remove Page Login
 
+  //Change Backgroud color
+  document.body.style.backgroundColor = '#00ddee'
 
-  getData_firebase();
+  div_show = document.createElement('div');
+  div_show.innerHTML = document.getElementById('container_content').innerHTML;
+  document.body.appendChild(div_show);
+
+  //if(!is_uid){
+    //IndexDB_Init();
+  //}
+
+  //getData_firebase();
+
   document.getElementById('add1').style.order = 10;
   document.getElementById('add2').style.order = 10;
   document.getElementById('add3').style.order = 10;
@@ -486,5 +504,100 @@ $(document).ready(function() {
   window.addEventListener('mousedown', press_window, false);
   //Keyboard Press Event
   document.addEventListener("keypress", keypress_callback, false);
+}
+function login_init_page(){
+  div_show = document.createElement('div');
+  div_show.id = 'login_page';
+  div_show.innerHTML = document.getElementById('container_login').innerHTML;
+  document.body.appendChild(div_show);
 
+  document.getElementById('btn_google_login').addEventListener('click', google_login);
+}
+
+function google_login(){
+  var provider = new firebase.auth.GoogleAuthProvider();
+  firebase.auth().signInWithPopup(provider).then(function(result) {
+    // This gives you a Google Access Token. You can use it to access the Google API.
+    var token = result.credential.accessToken;
+    // The signed-in user info.
+    user = result.user;
+    // ...
+    //console.log(user)
+    user_id = user.uid;
+    document.body.removeChild(document.getElementById('login_page'));
+    content_init_page();
+    getData_firebase();
+  }).catch(function(error) {
+    // Handle Errors here.
+    var errorCode = error.code;
+    var errorMessage = error.message;
+    // The email of the user's account used.
+    var email = error.email;
+    // The firebase.auth.AuthCredential type that was used.
+    var credential = error.credential;
+    // ...
+    //console.log(errorCode)
+  });
+}
+
+var db;
+var request;
+var user_id;
+function IndexDB_Init(){
+  //prefixes of implementation that we want to test
+  window.indexedDB = window.indexedDB || window.mozIndexedDB ||
+  window.webkitIndexedDB || window.msIndexedDB;
+
+  //prefixes of window.IDB objects
+  window.IDBTransaction = window.IDBTransaction ||
+  window.webkitIDBTransaction || window.msIDBTransaction;
+  window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange ||
+  window.msIDBKeyRange
+
+  request = window.indexedDB.open("firebaseLocalStorageDb");
+  request.onerror = function(event) {
+     //console.log("error: ");
+  };
+
+  request.onsuccess = function(event) {
+     db = request.result;
+     //console.log("success: "+ db);
+     readAll();
+  };
+}
+var is_uid = false;
+var is_content_init = false;
+function readAll() {
+   var objectStore = db.transaction("firebaseLocalStorage").objectStore("firebaseLocalStorage");
+   objectStore.openCursor().onsuccess = function(event) {
+      var cursor = event.target.result;
+      if (cursor) {
+         //alert("Name for id " + cursor.key + " is " + cursor.value.name + ",Age: " + cursor.value.age + ", Email: " + cursor.value.email);
+         //console.log(cursor.key + 'hihi ' + cursor.value.value.uid)
+         var array = cursor.key.split(':');
+         user_id = cursor.value.value.uid;
+         //console.log(user_id);
+         cursor.continue();
+         is_uid = true;
+         getData_firebase();
+      } else {
+         //alert("No more entries!");
+         //console.log('No UserID');
+      }
+      if(!is_content_init){
+        if(is_uid){
+          content_init_page();
+          //setTimeout(getData_firebase, 2000);
+        }
+        else{
+          login_init_page();
+        }
+        is_content_init = true;
+      }
+   };
+}
+
+$(document).ready(function() {
+  firebase_init();
+  IndexDB_Init();
 })
