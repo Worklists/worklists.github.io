@@ -1,9 +1,0 @@
-1. ID chua duoc thay doi khi xoa - tao element. ID = col + order
-2. Auto Resize Add-Input khi nhieu line
-3. Focus khi Add element chi duoc lan dau (Da fix)-> them e.preventDefault() sau .focus()
-4. Loi khi nhan Add 2 lan o 2 column khac nhau -> Done
-5. Loi khi di chuyen Element tu cot nay sang cot khac nhung vao vung chet(vung chua dat dieu kien)
-6. Loi ghi/xoa lien tuc Firebase(thoi gian ghi/xoa firebase kha lau)
-    -> Bi xung dot khi ghi - xoa dong thoi
-    ---> Chi ghi/xoa khi da drap xong
-    ---> Gui 1 luc toan bo gia tri cua 1 column
