@@ -1,0 +1,66 @@
+<html>
+<head>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu">
+  <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-auth.js"></script>
+</head>
+<body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+
+  <div class="lds-default"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+
+<script>
+  function firebase_init(){
+    var config = {
+      apiKey: "AIzaSyC7elL3FYPlcVj7PvN9ecGpvVUVg6L1fKg",
+      authDomain: "worklist-app.firebaseapp.com",
+      databaseURL: "https://worklist-app.firebaseio.com",
+      projectId: "worklist-app",
+      storageBucket: "worklist-app.appspot.com",
+      messagingSenderId: "740341135888"
+    };
+    firebase.initializeApp(config);
+
+    firebase.firestore().settings({
+      timestampsInSnapshots: true
+    });
+  }
+
+  firebase_init();
+  var user;
+  var provider = new firebase.auth.GoogleAuthProvider();
+  firebase.auth().signInWithPopup(provider).then(function(result) {
+    // This gives you a Google Access Token. You can use it to access the Google API.
+    var token = result.credential.accessToken;
+    // The signed-in user info.
+    user = result.user;
+    // ...
+    console.log(user)
+  }).catch(function(error) {
+    // Handle Errors here.
+    var errorCode = error.code;
+    var errorMessage = error.message;
+    // The email of the user's account used.
+    var email = error.email;
+    // The firebase.auth.AuthCredential type that was used.
+    var credential = error.credential;
+    // ...
+    console.log(errorCode)
+  });
+
+  function add_element_firebase(col_, index_, text_){
+    var db = firebase.firestore();
+    var data = new Object;
+    data[index_] = text_;
+    console.log(data);
+
+    db.collection("db").doc(col_).update({
+      [index_]: text_
+    });
+  }
+
+</script>
+</body>
+</html>
