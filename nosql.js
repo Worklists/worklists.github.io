@@ -2,7 +2,7 @@ function add_element_firebase(col_, index_, text_){
   var db = firebase.firestore();
   var data = new Object;
   data[index_] = text_;
-  //console.log(data);
+  console.log(data);
 
   db.collection(user_id).doc(col_)
   .update({
@@ -13,7 +13,7 @@ function add_element_firebase(col_, index_, text_){
     .set({
       [index_]: text_
     })
-    //console.log(err);
+    console.log(err);
   })
 }
 function firebase_init(){
@@ -36,20 +36,20 @@ var first_get = false;
 function firebase_exist(){
   firebase.firestore().collection(user_id).get()
   .then(function(querySnapshot) {
-    //console.log('then')
+    console.log('then')
     test1 = querySnapshot;
-    //console.log(querySnapshot)
+    console.log(querySnapshot)
     if(test1.size === 0){
-      //console.log('Firebase for User not Init')
+      console.log('Firebase for User not Init')
       return false;
     }
     else{
-      //console.log('Firebase for User have Init')
+      console.log('Firebase for User have Init')
       return true;
     }
   })
   .catch(function(error){
-    //console.log("Error getting document:", error);
+    console.log("Error getting document:", error);
   })
 }
 function getData_firebase(){
@@ -57,15 +57,15 @@ function getData_firebase(){
 
   firebase.firestore().collection(user_id).get()
   .then(function(querySnapshot) {
-    //console.log('then')
+    console.log('then')
     test1 = querySnapshot;
-    //console.log(querySnapshot)
+    console.log(querySnapshot)
     querySnapshot.forEach(function(doc) {
         // doc.data() is never undefined for query doc snapshots
         console.log(doc.id, " => ", doc.data());
         test1 = doc.data();
 
-        //console.log(doc.data()[1])
+        console.log(doc.data()[1])
         var index_get_data = 0;
         while(true){
           if(doc.data()[index_get_data] !== undefined){
@@ -79,7 +79,7 @@ function getData_firebase(){
     });
   })
   .catch(function(error) {
-    //console.log("Error getting document:", error);
+    console.log("Error getting document:", error);
   });
 }
 function delete_element_firebase(col, index){
@@ -93,27 +93,13 @@ function delete_element_firebase(col, index){
   });
   */
   var db = firebase.firestore();
-  var cityRef = db.collection(user_id).doc(col);
+  var cityRef = db.collection('db').doc(col);
   // Remove the 'capital' field from the document
   var removeCapital = cityRef.update({
       [index]: firebase.firestore.FieldValue.delete()
   });
 }
-var as = new Promise(
-  function (resolve, reject){
-    //var doc_project = firebase.firestore().collection(user_id).doc('project');
-    /*
-    doc_project.get()
-    .then(function(doc) {
-      console.log(doc.data());
-      a = doc.data();
-      resolve();
-    })
-    .catch(function(error) {
-      //console.log("Error getting document:", error);
-      reject();
-    });
-    */
-    resolve();
-  }
-)
+function firebase_auth(){
+
+
+}

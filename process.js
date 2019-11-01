@@ -66,6 +66,7 @@ function child_press(e){
     y_offset = document.getElementById(id_elem_drap).offsetTop - e.y - 10;
     console.log(document.getElementById(id_elem_drap).offsetLeft);
   }
+
 }
 function add_child(col, index, content){
   var child = document.createElement("div");
@@ -252,35 +253,18 @@ function col1_move(e){
           if(col_check !== col_drap_obj.id){
             if(col_obj.childElementCount == 2){
               var order_temp = elem_drap.style.order;
-
-              /*
-              delete_element_firebase(col_drap_obj.id, col_drap_obj.childElementCount - 3);
-              col_drap_obj.removeChild(elem_drap);
+              add_element_firebase(col_check, 0, elem_drap.textContent);
 
               elem_drap.style.order = 0;
               col_obj.appendChild(elem_drap);
-              add_element_firebase(col_obj.id, 0, elem_move.textContent);
-              */
-
-
-              //
 
               delete_element_firebase(col_drap_obj.id, col_drap_obj.childElementCount - 3);
+
               col_drap_obj.removeChild(elem_drap);
-
-              elem_drap.style.order = 0;
-              col_obj.appendChild(elem_drap);
-              add_element_firebase(col_check, 0, elem_move.textContent);
-
-
-              console.log('Elelemt Count' + col_drap_obj.childElementCount)
-              for(k = 1; k < col_drap_obj.childElementCount; k++){
-                if((col_drap_obj.children[k].style.order > order_temp)&&(col_drap_obj.children[k].style.order < 10)){
-                  console.log('K' + k);
-
-                  col_drap_obj.children[k].style.order = col_drap_obj.children[k].style.order - 1;
-                  console.log('New Order ' + col_drap_obj.children[k].style.order);
-                  add_element_firebase(col_drap_obj.id, col_drap_obj.children[k].style.order, col_drap_obj.children[k].textContent);
+              for(j = 1; j < col_drap_obj.childElementCount; j++){
+                if((col_drap_obj.children[j].style.order > order_temp)&&(col_drap_obj.children[j].style.order < 10)){
+                  col_drap_obj.children[j].style.order = col_drap_obj.children[j].style.order - 1;
+                  add_element_firebase(col_drap_obj.id, col_drap_obj.children[j].style.order, col_drap_obj.children[j].textContent);
                 }
               }
             }
@@ -430,7 +414,7 @@ function elem_delete(elem_del){
 }
 
 function keypress_callback(e){
-  //console.log(e.key);
+  console.log(e.key);
 
 
   if((e.key == 'Enter')&&(is_addElement)){
@@ -466,61 +450,9 @@ document.onkeydown = function(evt) {
     }
 };
 
-function login_init_page(){
-  div_show = document.createElement('div');
-  div_show.id = 'login_page';
-  div_show.innerHTML = document.getElementById('container_login').innerHTML;
-  document.body.appendChild(div_show);
-
-  document.getElementById('btn_google_login').addEventListener('click', google_login);
-}
-var index_project = 0;
-function dashboard_page_init(){
-  let doc_project = firebase.firestore().collection(user_id).doc('project');
-  doc_project.get()
-  .then(function(doc) {
-    //console.log(doc.data());
-    a = doc.data();
-    document.body.style.backgroundColor = '#00ddee'
-
-    div_show = document.createElement('div');
-    div_show.innerHTML = document.getElementById('container_dashboard').innerHTML;
-    document.body.appendChild(div_show);
-
-    document.getElementById('add_dassboard').addEventListener('mousedown', add_child_dashboard, false);
-    console.log(Object.keys(a).length);
-    for(let i = 0; i < Object.keys(a).length; i++){
-      (function(){
-        let child = document.createElement('div');
-        child.className = 'child_dashboard noselect';
-        child.innerText = a[i];
-        console.log(a[i])
-        child.style.order = index_project;
-        child.id = index_project;
-        document.getElementById('dashboard_element').appendChild(child);
-        index_project = index_project + 1;
-        child.addEventListener('mousedown', project_select, false);
-      })();
-    }
-  })
-  .catch(function(error) {
-    //console.log("Error getting document:", error);
-  });
-}
-function add_child_dashboard(){
-  let child = document.createElement('div');
-  child.className = 'child_dashboard noselect';
-  child.innerText = 'Project';
-  child.style.order = index_project;
-
-  document.getElementById('dashboard_element').appendChild(child);
-  index_project = index_project + 1;
-}
-function project_select(){
-  
-}
-function content_init_page(){
+function content_init(){
   //Remove Page Login
+  document.body.removeChild(document.getElementById('login_page'));
 
   //Change Backgroud color
   document.body.style.backgroundColor = '#00ddee'
@@ -529,10 +461,8 @@ function content_init_page(){
   div_show.innerHTML = document.getElementById('container_content').innerHTML;
   document.body.appendChild(div_show);
 
-  //if(!is_uid){
-    //IndexDB_Init();
-  //}
-
+  IndexDB_Init();
+  setTimeout(getData_firebase, 2000);
   //getData_firebase();
 
   document.getElementById('add1').style.order = 10;
@@ -565,7 +495,6 @@ function content_init_page(){
   document.addEventListener("keypress", keypress_callback, false);
 }
 
-
 function google_login(){
   var provider = new firebase.auth.GoogleAuthProvider();
   firebase.auth().signInWithPopup(provider).then(function(result) {
@@ -574,11 +503,8 @@ function google_login(){
     // The signed-in user info.
     user = result.user;
     // ...
-    //console.log(user)
-    user_id = user.uid;
-    document.body.removeChild(document.getElementById('login_page'));
-    content_init_page();
-    getData_firebase();
+    console.log(user)
+    content_init();
   }).catch(function(error) {
     // Handle Errors here.
     var errorCode = error.code;
@@ -588,14 +514,13 @@ function google_login(){
     // The firebase.auth.AuthCredential type that was used.
     var credential = error.credential;
     // ...
-    //console.log(errorCode)
+    console.log(errorCode)
   });
 }
 
 var db;
 var request;
 var user_id;
-/*
 function IndexDB_Init(){
   //prefixes of implementation that we want to test
   window.indexedDB = window.indexedDB || window.mozIndexedDB ||
@@ -609,104 +534,46 @@ function IndexDB_Init(){
 
   request = window.indexedDB.open("firebaseLocalStorageDb");
   request.onerror = function(event) {
-     //console.log("error: ");
+     console.log("error: ");
   };
 
   request.onsuccess = function(event) {
      db = request.result;
-     //console.log("success: "+ db);
+     console.log("success: "+ db);
      readAll();
   };
 }
-*/
-function IndexDB_Init(){
-  //prefixes of implementation that we want to test
-  window.indexedDB = window.indexedDB || window.mozIndexedDB ||
-  window.webkitIndexedDB || window.msIndexedDB;
-
-  //prefixes of window.IDB objects
-  window.IDBTransaction = window.IDBTransaction ||
-  window.webkitIDBTransaction || window.msIDBTransaction;
-  window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange ||
-  window.msIDBKeyRange
-
-  request = window.indexedDB.open("firebaseLocalStorageDb");
-  request.onerror = function(event) {
-     //console.log("error: ");
-  };
-
-  request.onsuccess = function(event) {
-     db = request.result;
-     //console.log("success: "+ db);
-     readAll();
-  };
-}
-
-var is_uid = false;
-var is_content_init = false;
 function readAll() {
    var objectStore = db.transaction("firebaseLocalStorage").objectStore("firebaseLocalStorage");
+   console.log('hihis')
    objectStore.openCursor().onsuccess = function(event) {
       var cursor = event.target.result;
+      console.log('hihi')
       if (cursor) {
          //alert("Name for id " + cursor.key + " is " + cursor.value.name + ",Age: " + cursor.value.age + ", Email: " + cursor.value.email);
-         //console.log(cursor.key + 'hihi ' + cursor.value.value.uid)
+         console.log(cursor.key + 'hihi ' + cursor.value.value.uid)
          var array = cursor.key.split(':');
          user_id = cursor.value.value.uid;
-         //console.log(user_id);
+         console.log(user_id);
          cursor.continue();
-         is_uid = true;
-         //getData_firebase();
       } else {
          //alert("No more entries!");
-         //console.log('No UserID');
+         console.log('No UserID');
       }
-      if(!is_content_init){
-        if(is_uid){
-          //content_init_page();
-          //setTimeout(getData_firebase, 2000);
-          dashboard_page_init();
-        }
-        else{
-          //login_init_page();
-        }
-        is_content_init = true;
-      }
+
    };
 }
-/*
-function readAll() {
-   var objectStore = db.transaction("firebaseLocalStorage").objectStore("firebaseLocalStorage");
-   objectStore.openCursor().onsuccess = function(event) {
-      var cursor = event.target.result;
-      if (cursor) {
-         //alert("Name for id " + cursor.key + " is " + cursor.value.name + ",Age: " + cursor.value.age + ", Email: " + cursor.value.email);
-         //console.log(cursor.key + 'hihi ' + cursor.value.value.uid)
-         var array = cursor.key.split(':');
-         user_id = cursor.value.value.uid;
-         //console.log(user_id);
-         cursor.continue();
-         is_uid = true;
-         getData_firebase();
-      } else {
-         //alert("No more entries!");
-         //console.log('No UserID');
-      }
-      if(!is_content_init){
-        if(is_uid){
-          content_init_page();
-          //setTimeout(getData_firebase, 2000);
-        }
-        else{
-          login_init_page();
-        }
-        is_content_init = true;
-      }
-   };
-}
-*/
 
 $(document).ready(function() {
   firebase_init();
-  IndexDB_Init();
+
+  div_show = document.createElement('div');
+  div_show.id = 'login_page';
+  div_show.innerHTML = document.getElementById('container_login').innerHTML;
+  document.body.appendChild(div_show);
+
+  //document.getElementById('btn_login').addEventListener('click', content_init);
+
+  document.getElementById('btn_google_login').addEventListener('click', google_login);
+
 })

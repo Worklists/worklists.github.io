@@ -1,7 +1,5 @@
 body{
   background-color: #f9f9f9;
-  margin:0;
-  padding:0;
 }
 .logo{
   min-width: 20px;
@@ -90,33 +88,6 @@ body{
 .title_logo:hover{
   color: #cc0000;
 }
-.dashboard_row{
-  width: 100%;
-  border-radius: 10px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  height: 40vh;
-}
-.child_dashboard{
-  background-color: #fdfdfd;
-  border-radius: 20px;
-  margin: 10px;
-  padding: 10px;  
-  position: relative;
-  cursor: grab;
-  font-family: Mali;
-  width: 20vw;
-  text-align: center;
-  height: 20vh
-}
-.child_dashboard_add{
-  margin-left: 1vw;
-  order: 10;
-  cursor: pointer;
-}
-
 .col1{
   width: 23.33%;
   background-color: #eeeeee;
@@ -142,7 +113,6 @@ body{
   order: 1;
   position: relative;
   cursor: grab;
-  font-family: Mali;
 }
 .childcontent{
   float: left;
