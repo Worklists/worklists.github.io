@@ -158,6 +158,8 @@ function add_child_callback(e){
     var child = document.createElement("div");
     var childcontent = document.createElement("div");
     var childlogo = document.createElement("div");
+
+
     switch(e.target.parentElement.id){
       case 'col1':
       {
@@ -185,6 +187,7 @@ function add_child_callback(e){
       }
     }
     child_col[e.target.parentElement.id] = child_col[e.target.parentElement.id] + 1;
+
     child.setAttribute('class','child noselect');
     //Content on Child
     childcontent.setAttribute('class','childcontent noselect');
@@ -192,9 +195,11 @@ function add_child_callback(e){
     childcontent.innerHTML = 'Task';
     //Logo on Child
     childlogo.setAttribute('class','childlogo fa fa-edit');
+
     child.appendChild(childcontent);
     child.appendChild(childlogo);
     parent.appendChild(child);
+
     child.addEventListener('mousedown',child_press,false);
   }
   */
@@ -251,6 +256,7 @@ function col1_move(e){
               /*
               delete_element_firebase(col_drap_obj.id, col_drap_obj.childElementCount - 3);
               col_drap_obj.removeChild(elem_drap);
+
               elem_drap.style.order = 0;
               col_obj.appendChild(elem_drap);
               add_element_firebase(col_obj.id, 0, elem_move.textContent);
@@ -460,6 +466,59 @@ document.onkeydown = function(evt) {
     }
 };
 
+function login_init_page(){
+  div_show = document.createElement('div');
+  div_show.id = 'login_page';
+  div_show.innerHTML = document.getElementById('container_login').innerHTML;
+  document.body.appendChild(div_show);
+
+  document.getElementById('btn_google_login').addEventListener('click', google_login);
+}
+var index_project = 0;
+function dashboard_page_init(){
+  let doc_project = firebase.firestore().collection(user_id).doc('project');
+  doc_project.get()
+  .then(function(doc) {
+    //console.log(doc.data());
+    a = doc.data();
+    document.body.style.backgroundColor = '#00ddee'
+
+    div_show = document.createElement('div');
+    div_show.innerHTML = document.getElementById('container_dashboard').innerHTML;
+    document.body.appendChild(div_show);
+
+    document.getElementById('add_dassboard').addEventListener('mousedown', add_child_dashboard, false);
+    console.log(Object.keys(a).length);
+    for(let i = 0; i < Object.keys(a).length; i++){
+      (function(){
+        let child = document.createElement('div');
+        child.className = 'child_dashboard noselect';
+        child.innerText = a[i];
+        console.log(a[i])
+        child.style.order = index_project;
+        child.id = index_project;
+        document.getElementById('dashboard_element').appendChild(child);
+        index_project = index_project + 1;
+        child.addEventListener('mousedown', project_select, false);
+      })();
+    }
+  })
+  .catch(function(error) {
+    //console.log("Error getting document:", error);
+  });
+}
+function add_child_dashboard(){
+  let child = document.createElement('div');
+  child.className = 'child_dashboard noselect';
+  child.innerText = 'Project';
+  child.style.order = index_project;
+
+  document.getElementById('dashboard_element').appendChild(child);
+  index_project = index_project + 1;
+}
+function project_select(){
+  
+}
 function content_init_page(){
   //Remove Page Login
 
@@ -505,14 +564,7 @@ function content_init_page(){
   //Keyboard Press Event
   document.addEventListener("keypress", keypress_callback, false);
 }
-function login_init_page(){
-  div_show = document.createElement('div');
-  div_show.id = 'login_page';
-  div_show.innerHTML = document.getElementById('container_login').innerHTML;
-  document.body.appendChild(div_show);
 
-  document.getElementById('btn_google_login').addEventListener('click', google_login);
-}
 
 function google_login(){
   var provider = new firebase.auth.GoogleAuthProvider();
@@ -543,6 +595,7 @@ function google_login(){
 var db;
 var request;
 var user_id;
+/*
 function IndexDB_Init(){
   //prefixes of implementation that we want to test
   window.indexedDB = window.indexedDB || window.mozIndexedDB ||
@@ -565,12 +618,65 @@ function IndexDB_Init(){
      readAll();
   };
 }
+*/
+function IndexDB_Init(){
+  //prefixes of implementation that we want to test
+  window.indexedDB = window.indexedDB || window.mozIndexedDB ||
+  window.webkitIndexedDB || window.msIndexedDB;
+
+  //prefixes of window.IDB objects
+  window.IDBTransaction = window.IDBTransaction ||
+  window.webkitIDBTransaction || window.msIDBTransaction;
+  window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange ||
+  window.msIDBKeyRange
+
+  request = window.indexedDB.open("firebaseLocalStorageDb");
+  request.onerror = function(event) {
+     //console.log("error: ");
+  };
+
+  request.onsuccess = function(event) {
+     db = request.result;
+     //console.log("success: "+ db);
+     readAll();
+  };
+}
+
 var is_uid = false;
 var is_content_init = false;
 function readAll() {
-  console.log(db);
-  try{
-   var objectStore = db.transaction(["firebaseLocalStorage"]).objectStore("firebaseLocalStorage");
+   var objectStore = db.transaction("firebaseLocalStorage").objectStore("firebaseLocalStorage");
+   objectStore.openCursor().onsuccess = function(event) {
+      var cursor = event.target.result;
+      if (cursor) {
+         //alert("Name for id " + cursor.key + " is " + cursor.value.name + ",Age: " + cursor.value.age + ", Email: " + cursor.value.email);
+         //console.log(cursor.key + 'hihi ' + cursor.value.value.uid)
+         var array = cursor.key.split(':');
+         user_id = cursor.value.value.uid;
+         //console.log(user_id);
+         cursor.continue();
+         is_uid = true;
+         //getData_firebase();
+      } else {
+         //alert("No more entries!");
+         //console.log('No UserID');
+      }
+      if(!is_content_init){
+        if(is_uid){
+          //content_init_page();
+          //setTimeout(getData_firebase, 2000);
+          dashboard_page_init();
+        }
+        else{
+          //login_init_page();
+        }
+        is_content_init = true;
+      }
+   };
+}
+/*
+function readAll() {
+   var objectStore = db.transaction("firebaseLocalStorage").objectStore("firebaseLocalStorage");
    objectStore.openCursor().onsuccess = function(event) {
       var cursor = event.target.result;
       if (cursor) {
@@ -597,12 +703,8 @@ function readAll() {
         is_content_init = true;
       }
    };
-  }
-  catch(err){
-    login_init_page();
-    console.log(err);
-  }
 }
+*/
 
 $(document).ready(function() {
   firebase_init();

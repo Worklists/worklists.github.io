@@ -99,7 +99,21 @@ function delete_element_firebase(col, index){
       [index]: firebase.firestore.FieldValue.delete()
   });
 }
-function firebase_auth(){
-
-
-}
+var as = new Promise(
+  function (resolve, reject){
+    //var doc_project = firebase.firestore().collection(user_id).doc('project');
+    /*
+    doc_project.get()
+    .then(function(doc) {
+      console.log(doc.data());
+      a = doc.data();
+      resolve();
+    })
+    .catch(function(error) {
+      //console.log("Error getting document:", error);
+      reject();
+    });
+    */
+    resolve();
+  }
+)
