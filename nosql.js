@@ -82,7 +82,7 @@ function getData_firebase(){
     console.log("Error getting document:", error);
   });
 }
-function delete_element_firebase(col, index){
+function delete_element_firebase(col, row){
   /*
   Xoa cot thu 2
   var db = firebase.firestore();
@@ -92,11 +92,12 @@ function delete_element_firebase(col, index){
       console.error("Error removing document: ", error);
   });
   */
+  console.log(row);
   var db = firebase.firestore();
-  var cityRef = db.collection('db').doc(col);
-  // Remove the 'capital' field from the document
-  var removeCapital = cityRef.update({
-      [index]: firebase.firestore.FieldValue.delete()
+  var cityRef = db.collection(user_id).doc(col);
+
+  var remove = cityRef.update({
+      [row]: firebase.firestore.FieldValue.delete()
   });
 }
 function firebase_auth(){
